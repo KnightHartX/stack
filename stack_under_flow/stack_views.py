@@ -555,4 +555,4 @@ def readallmessage(request):
             item.save()
         return SuccessResponse5()
     except:
-        return ErrorResponse5('阅读所有消息失败')
+        return ErrorResponse5('设置所有消息已读失败')
