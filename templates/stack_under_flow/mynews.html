@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Home</title>
+    {% load staticfiles %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %} "/>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static 'css/code.css' %}"/>
+    {% load likes_tags %}
+    {#显示提示信息#}
+    <script type="text/javascript">
+        function disp_alert() {
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags %}
+                        alert("{{ message }}")
+                    {% endif %}
+                {% endfor %}
+            {% endif %}}
+    </script>
+
+</head>
+
+<body onload="disp_alert()">
+<header>
+    <nav class="navbar navbar-default" id="navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#header-navbar" aria-expanded="false">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h1 class="logo">
+                    <a href="http://127.0.0.1:8000/stack_under_flow/displayquestion">Stack Underflow</a>
+                </h1>
+            </div>
+            <div class="collapse navbar-collapse" id="header-navbar">
+                <form class="navbar-form visible-xs" action="#" method="POST">
+                    <div class="input-group">
+                        <input type="text" name="keyword" class="form-control" placeholder="请输入关键字" maxlength="20"
+                               autocomplete="off">
+                        <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default btn-search">搜索</button>
+                            </span>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>欢迎您，{{ tempnickname }}</a></li>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/mynews/">消息({{ unread_message_count }}未读)</a>
+                    </li>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/my/">我的</a></li>
+                    <li><a href="http://127.0.0.1:8000/users/register/">注册</a></li>
+                    <li><a href="http://127.0.0.1:8000/users/login/">登陆</a></li>
+                    <li><a href="{% url 'logout' %}?next={{ '/' }}">注销登录</a>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/commitquestion">发布问题</a></li>
+                    <li><a href="404.html">关于</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="introBanner" style="float: left;">
+        <h3>Stack Underflow</h3>
+        <p>我的消息</p>
+    </div>
+
+    <div class="content-wrap">
+        <div class="content">
+            <div class="title">
+                <h3>我的所有消息（点击内容可跳转至相关页面）</h3>
+                <button class="btn btn-default"
+                        onclick="read_all_message(this,'{{current_user.nickname}}')">
+                    点击将所有消息设为已读
+                </button>
+                <script>
+                    function read_all_message(obj,current_usernickname) {
+                        $.ajax({
+                            url: "{% url 'stack_under_flow:readallmessage' %}",
+                            type: 'POST',
+                            data: {
+                                current_usernickname:current_usernickname
+                            },
+                            cache: false,
+                            success: function (data) {
+                                console.log(data)
+                                if (data['status'] == 'SUCCESS') {
+                                    window.alert("已阅读所有消息！");
+                                    location.reload();
+                                } else {
+                                    alert(data['message']);
+                                }
+                            },
+                            error: function (xhr) {
+                                console.log(xhr)
+                            }
+                        });
+                    }
+                </script>
+            </div>
+            <div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>回复者</th>
+                        <th>回复时间</th>
+                        <th>内容</th>
+                        <th>状态</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in mymessages %}
+                        <tr>
+                            <td>{{ item.sendmessage_usernickname }}</td>
+                            <td>{{ item.message_sendtime }}</td>
+                            <td>
+                                <a href="{% url 'stack_under_flow:questioninfo'  item.message_questionid %}">{{ item.message_content }}</a>
+                            </td>
+                            {% if  item.message_status == 'unread' %}
+                                <td>消息未读</td>
+                            {% else %}
+                                <td>消息已读</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <script>
+                function deleteit(questionid) {
+                    $.ajax({
+                        url: "{% url 'stack_under_flow:deletetable' %}",
+                        type: 'POST',
+                        data: {
+                            questionid: questionid,
+                        },
+                        cache: false,
+                        success: function (data) {
+                            console.log(data)
+                            if (data['status'] == 'SUCCESS') {
+                                window.alert("删除成功！");
+                                location.reload();
+                            } else {
+                                alert(data['message']);
+                            }
+                        },
+                        error: function (xhr) {
+                            console.log(xhr)
+                        }
+                    });
+                }
+            </script>
+            <ul class="pagination" id="pager">
+                {#上一页按钮开始#}
+                {# 如果当前页有上一页#}
+                {% if questiontable.has_previous %}
+                    {#  当前页的上一页按钮正常使用#}
+                    <li class="previous"><a
+                            href="http://127.0.0.1:8000/stack_under_flow/myadmin/?page={{ questiontable.previous_page_number }}">上一页</a>
+                    </li>
+                {% else %}
+                    {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                    <li class="previous disabled"><a href="#">上一页</a></li>
+                {% endif %}
+                {#上一页按钮结束#}
+                {# 页码开始#}
+                {% for num in paginator.page_range %}
+
+                    {% if num == currentPage %}
+                        <li class="item active"><a
+                                href="http://127.0.0.1:8000/stack_under_flow/myadmin/?page={{ num }}">{{ num }}</a></li>
+                    {% else %}
+                        <li class="item"><a
+                                href="http://127.0.0.1:8000/stack_under_flow/myadmin/?page={{ num }}">{{ num }}</a></li>
+
+                    {% endif %}
+                {% endfor %}
+                {#页码结束#}
+                {# 下一页按钮开始#}
+                {% if questiontable.has_next %}
+                    <li class="next"><a
+                            href="http://127.0.0.1:8000/stack_under_flow/myadmin/?page={{ questiontable.next_page_number }}">下一页</a>
+                    </li>
+                {% else %}
+                    <li class="next disabled"><a href="#">下一页</a></li>
+                {% endif %}
+                {# 下一页按钮结束#}
+            </ul>
+        </div>
+
+        <div class="sidebar">
+            <div class="widget widget_hot">
+                <h3>最新提出的问题</h3>
+                <ul>
+                    {% for item in newest_list_obj %}
+                        {% if forloop.counter <= 5 %}
+                            <li>
+                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                    <span class="text ">{{ item.title }}</span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-eye-open "></i> {{ item.view }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="widget widget_hot">
+                <h3>最热门的问题</h3>
+                <ul>
+                    {% for item in hotest_list_obj %}
+                        {% if forloop.counter <= 5 %}
+                            <li>
+                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                    <span class="text ">{{ item.title }}</span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-eye-open "></i> {{ item.view }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="widget widget_hot">
+                <h3>最有价值的问题</h3>
+                <ul>
+                    {% for item in mostvalueable_list_obj %}
+                        {% if forloop.counter <= 5 %}
+                            <li>
+                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                    <span class="text ">{{ item.title }}</span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-thumbs-up"
+                                               style="color:rgb(0,154,97);font-size:10px"></i> {% get_like_count item %}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="widget widget_sentence">
+                <h3>标签云</h3>
+                {% for item in tags_list_obj %}
+                    <ul>
+                        <li><a href="{% url 'stack_under_flow:tag' item.pk %}">{{ item.tagname }} <span
+                                class="badge">{{ item.qcountintag }}</span></a></li>
+                    </ul>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="container">
+        <p>Copyright &copy; 2018.Stack Underflow All rights reserved</p>
+    </div>
+</div>
+</body>
+</html>

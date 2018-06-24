@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load staticfiles %}
+    <link type="text/css" rel="stylesheet" href="{% static 'css/code.css' %}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %} "/>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/summernote/summernote.css' %}">
+    <script src="{% static '/summernote/summernote.js' %}"></script>
+    <script src="{% static '/summernote/lang/summernote-zh-CN.js' %}"></script><!--加载中文-->
+
+    {#显示提示信息#}
+    <script type="text/javascript">
+        function disp_alert() {
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags %}
+                        alert("{{ message }}")
+                    {% endif %}
+                {% endfor %}
+            {% endif %}}
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({#编辑器设置#}
+                {
+                    width: 750,
+                    height: 360,
+                    focus: true, {#页面打开时光标自动进入编辑区#}
+                    lang: 'zh-CN',
+                    toolbar: [{#工具栏加载项设置#}
+                        ['style', ['style']], {#文本样式#}
+                        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript',
+                            'strikethrough', 'clear']], {#字体样式#}
+                        ['fontname', ['fontname']], {#字体列表#}
+                        ['fontsize', ['fontsize']], {#字体尺寸#}
+                        ['color', ['color']], {#字体颜色#}
+                        ['para', ['ul', 'ol', 'paragraph']], {#文本列表#}
+                        ['height', ['height']], {#行高#}
+                        ['table', ['table']], {#表格#}
+                        ['insert', ['link', 'picture', 'video', 'hr']], {#插入项#}
+                        ['view', ['fullscreen', 'codeview']], {#视图#}
+                        ['help', ['help']]{#帮助#}
+                    ],
+                    fontNames:
+                        [
+                            'Arial',
+                            'Arial Black',
+                            'Comic Sans MS',
+                            'Courier New',
+                            '宋体',
+                            'Microsoft YaHei'
+                        ]
+                }
+            );
+        });
+    </script>
+    <style>
+        article code {
+            white-space: normal;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body onload="disp_alert()">
+
+<header>
+    <nav class="navbar navbar-default" id="navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#header-navbar" aria-expanded="false">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h1 class="logo">
+                    <a href="http://127.0.0.1:8000/stack_under_flow/displayquestion">Stack Underflow</a>
+                </h1>
+            </div>
+            <div class="collapse navbar-collapse" id="header-navbar">
+                <form class="navbar-form visible-xs" action="#" method="POST">
+                    <div class="input-group">
+                        <input type="text" name="keyword" class="form-control" placeholder="请输入关键字" maxlength="20"
+                               autocomplete="off">
+                        <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default btn-search">搜索</button>
+                            </span>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>欢迎您，{{ tempnickname }}</a></li>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/mynews/">消息({{ unread_message_count }}未读)</a>
+                    </li>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/my/">我的</a></li>
+                    <li><a href="http://127.0.0.1:8000/users/register/">注册</a></li>
+                    <li><a href="http://127.0.0.1:8000/users/login/">登陆</a></li>
+                    <li><a href="{% url 'logout' %}?next={{ '/' }}">注销登录</a>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/commitquestion">发布问题</a></li>
+                    <li><a href="404.html">关于</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+{#        提交问题#}
+<div class="title">
+    <h3>提交问题</h3>
+</div>
+<button type="button" class="btn btn-primary" id="showHidden">点击切换富文本编辑器和markdown</button>
+<br>
+<br>
+<div id="div1" class="article-comment" style="display:block">
+    <form action={% url 'stack_under_flow:commitquestion' %}  method="post" name="commitquestion">
+        <p><span></span><input class="form-control" type="text" placeholder="请输入问题" name="title" required></p>
+        <p><span></span><input type="number" value="0" min="0" class="form-control"
+                               placeholder="请输入悬赏的积分(不得超过目前已有的积分)，您目前的积分为{{ current_user.point }}" name="giftpoint"
+                               required></p>
+        <textarea id="summernote" class="form-control" rows="8" placeholder="请输入您的问题详情"
+                  name="content" required></textarea>
+        <span>请选择该问题的类型</span>
+
+        {#        {% for item in tags_list_obj %}#}
+        {#            <label><input name="{{ item.tagname }}" type="checkbox" value="{{ item.tagname }}"/>{{ item.tagname }}#}
+        {#            </label>#}
+        {#        {% endfor %}#}
+        {% for item in tags_list_obj %}
+            <label class="checkbox-inline">
+                <input value="{{ item.tagname }}" type="checkbox" name="tags"/>{{ item.tagname }}
+            </label>
+        {% endfor %}
+        <br>
+        <input type="reset" class="btn btn-primary"><input type="submit" class="btn btn-primary" value="提交问题">
+    </form>
+</div>
+
+<div>
+    <div id="div2" class="article-comment" style="display:none">
+        <form action={% url 'stack_under_flow:commitquestion' %}  method="post" name="commitquestion">
+            <p><span></span><input type="text" class="form-control" placeholder="请输入问题" name="title"></p>
+            <p><span></span><input type="number" value="0" min="0" class="form-control"
+                                   placeholder="请输入悬赏的积分(不得超过目前已有的积分)，您目前的积分为{{ current_user.point }}" name="giftpoint"
+                                   required></p>
+            <textarea id="markdowneditor" class="form-control" rows="8" placeholder="请输入您的问题详情"
+                      name="content" required></textarea>
+            <span>请选择该问题的类型</span>
+
+            {#            {% for item in tags_list_obj %}#}
+            {#                <label><input name="{{ item.tagname }}" type="checkbox" value="{{ item.tagname }}"/>{{ item.tagname }}#}
+            {#                </label>#}
+            {#            {% endfor %}#}
+
+            {% for item in tags_list_obj %}
+                <label class="checkbox-inline">
+                    <input value="{{ item.tagname }}" type="checkbox" name="tags"/>{{ item.tagname }}
+                </label>
+            {% endfor %}
+            <br>
+            <input type="reset" class="btn btn-primary"><input class="btn btn-primary" type="submit" value="提交问题">
+        </form>
+    </div>
+</div>
+<script>
+    function show_hidden(obj) {
+        if (obj.style.display == 'block') {
+            obj.style.display = 'none';
+        } else {
+            obj.style.display = 'block';
+        }
+    }
+
+    var sh = document.getElementById("showHidden");
+    sh.onclick = function () {
+        var div1 = document.getElementById("div1");
+        var div2 = document.getElementById("div2");
+        show_hidden(div1);
+        show_hidden(div2);
+        return false;
+    }
+</script>
+
+
+<div class="footer ">
+    <div class="container ">
+        <p>Copyright &copy; 2018.Stack Underflow All rights reserved</p>
+    </div>
+</div>
+</body>
+</html>

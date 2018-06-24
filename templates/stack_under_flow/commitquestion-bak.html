@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提交问题</title>
+</head>
+<body>
+    <h1>POST方式</h1>
+    <form action={% url 'stack_under_flow:commitquestion' %}  method="post" name="commitquestion">
+         <p><span>标题</span><input type="text" placeholder="标题" name="title"></p>
+        <p><span>内容</span><input type="text" placeholder="内容" name="content"></p>
+        <input type="reset">&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="提交">
+    </form>
+</body>
+</html>

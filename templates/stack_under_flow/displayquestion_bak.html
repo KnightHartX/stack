@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看所有问题</title>
+</head>
+<body>
+    <table border="1">
+        <tr>
+            <th>问题标题</th>
+            <th>内容</th>
+            <th>用户昵称</th>
+            <th>顶</th>
+            <th>踩</th>
+            <th>回复数目</th>
+        </tr>
+        {% for item in li %}
+        <tr>
+            <td>{{ item.title }}</td>
+            <td>{{ item.content }}</td>
+            <td>{{ item.useridnickname }}</td>
+            <td>{{ item.up }}</td>
+            <td>{{ item.down }}</td>
+            <td>{{ item.answercount }}</td>
+            <td><a href="{% url 'stack_under_flow:questioninfo'  item.id  %}">{{ item.title }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

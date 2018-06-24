@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load staticfiles %}
+    <link type="text/css" rel="stylesheet" href="{% static 'css/code.css' %}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %} "/>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/summernote/summernote.css' %}">
+    <script src="{% static '/summernote/summernote.js' %}"></script>
+    <script src="{% static '/summernote/lang/summernote-zh-CN.js' %}"></script><!--加载中文-->
+    {% load likes_tags %}
+    {#显示提示信息#}
+    <script type="text/javascript">
+        function disp_alert() {
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags %}
+                        alert("{{ message }}");
+                    {% endif %}
+                {% endfor %}
+            {% endif %}}
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({#编辑器设置#}
+                {
+                    width: 750,
+                    height: 360,
+                    focus: true, {#页面打开时光标自动进入编辑区#}
+                    lang: 'zh-CN',
+                    toolbar: [{#工具栏加载项设置#}
+                        ['style', ['style']], {#文本样式#}
+                        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript',
+                            'strikethrough', 'clear']], {#字体样式#}
+                        ['fontname', ['fontname']], {#字体列表#}
+                        ['fontsize', ['fontsize']], {#字体尺寸#}
+                        ['color', ['color']], {#字体颜色#}
+                        ['para', ['ul', 'ol', 'paragraph']], {#文本列表#}
+                        ['height', ['height']], {#行高#}
+                        ['table', ['table']], {#表格#}
+                        ['insert', ['link', 'picture', 'video', 'hr']], {#插入项#}
+                        ['view', ['fullscreen', 'codeview']], {#视图#}
+                        ['help', ['help']]{#帮助#}
+                    ],
+                    fontNames:
+                        [
+                            'Arial',
+                            'Arial Black',
+                            'Comic Sans MS',
+                            'Courier New',
+                            '宋体',
+                            'Microsoft YaHei'
+                        ]
+                }
+            );
+        });
+    </script>
+
+    {#刷新页面#}
+    <script>
+        function shuaxin() {
+            location.reload();
+        }
+    </script>
+</head>
+
+<body onload="disp_alert()">
+<header>
+    <nav class="navbar navbar-default" id="navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#header-navbar" aria-expanded="false">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h1 class="logo">
+                    <a href="http://127.0.0.1:8000/stack_under_flow/displayquestion">Stack Underflow</a>
+                </h1>
+            </div>
+            <div class="collapse navbar-collapse" id="header-navbar">
+                <form class="navbar-form visible-xs" action="#" method="POST">
+                    <div class="input-group">
+                        <input type="text" name="keyword" class="form-control" placeholder="请输入关键字" maxlength="20"
+                               autocomplete="off">
+                        <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default btn-search">搜索</button>
+                            </span>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                     <li><a>欢迎您，{{ tempnickname }}</a></li>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/mynews/">消息({{ unread_message_count }}未读)</a>
+                    </li>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/my/">我的</a></li>
+                    <li><a href="http://127.0.0.1:8000/users/register/">注册</a></li>
+                    <li><a href="http://127.0.0.1:8000/users/login/">登陆</a></li>
+                    <li><a href="{% url 'logout' %}?next={{ '/' }}">注销登录</a>
+                    <li><a href="http://127.0.0.1:8000/stack_under_flow/commitquestion">发布问题</a></li>
+                    <li><a href="404.html">关于</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="content-wrap">
+        <div class="content">
+            <header class="article-header">
+                <h1 class="article-title"><a href="#"> {{ questioninfo.title }} </a></h1>
+                <div class="article-meta ">
+                    <span class="giftpoint"><a>悬赏积分：{{ questioninfo.giftpoint }}分&nbsp;&nbsp;&nbsp;</a></span>
+                    <span class="item time ">{{ questioninfo.update_time }}</span>
+                    <span class="item tags">标签：
+                        {% for item in tagdisplay %}
+                            <a href="{% url 'stack_under_flow:tag' item.pk %}">{{ item.tagname }}</a>
+                        {% endfor %}
+                    </span>
+                    <span class="item views"><i class="glyphicon glyphicon-eye-open"></i> {{ questioninfo.view }}</span>
+                </div>
+            </header>
+
+            <article class="article-content">
+                <div>
+                    {% autoescape off %}
+                        {{ questioninfo.content|safe }}
+                    {% endautoescape %}
+                </div>
+            </article>
+            <h3><B>您感觉这个问题有价值么？</B></h3>
+            {#        点赞#}
+            <div class="like" onclick="likeChange(this, '{% get_content_type questioninfo %}', {{ questioninfo.id }})">
+                <span class="glyphicon glyphicon-thumbs-up {% get_like_status questioninfo %}"
+                      style="color:rgb(0,154,97);font-size:25px"></span>
+                <span class="liked-num">{% get_like_count questioninfo %}</span>
+                <span><I>这个问题对我来说非常有价值！</I></span>
+            </div>
+
+            {#            点赞js#}
+            <script>
+                function likeChange(obj, content_type, object_id) {
+                    let notlike = $('.glyphicon-thumbs-down');
+
+                    function panduan() {
+                        if (obj.getElementsByClassName('active1').length == 0) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+
+                    let is_like = panduan();
+                    console.log('is_like');
+                    console.log(is_like);
+                    if (notlike.hasClass("active2")) {
+                        window.alert("您已经踩过！请先取消踩再点赞！");
+                    }
+                    else {
+                        $.ajax({
+                            url: "{% url 'like_change' %}",
+                            type: 'GET',
+                            data: {
+                                content_type: content_type,
+                                object_id: object_id,
+                                is_like: is_like
+                            },
+                            cache: false,
+                            success: function (data) {
+                                console.log(data)
+                                if (data['status'] == 'SUCCESS') {
+                                    // 更新点赞状态
+                                    let element = $(obj.getElementsByClassName('glyphicon glyphicon-thumbs-up'));
+                                    if (is_like) {
+                                        element.addClass('active1');
+                                        window.alert("点赞成功");
+                                    } else {
+                                        element.removeClass('active1');
+                                        window.alert("取消点赞");
+                                    }
+                                    // 更新点赞数量
+                                    let liked_num = $(obj.getElementsByClassName('liked-num'));
+                                    liked_num.text(data['liked_num']);
+                                } else {
+                                    alert(data['message']);
+                                }
+                            },
+                            error: function (xhr) {
+                                console.log(xhr)
+                            }
+                        });
+                    }
+                }
+            </script>
+            <br>
+            <br>
+            {#                    踩#}
+            <div class="unlike"
+                 onclick="unlikeChange(this, '{% get_content_type questioninfo %}', {{ questioninfo.id }})">
+                <span class="glyphicon glyphicon-thumbs-down {% get_unlike_status questioninfo %}"
+                      style="color:rgb(0,154,97);font-size:25px"></span>
+                <span class="unliked-num">{% get_unlike_count questioninfo %}</span>
+                <span><I>这个问题对我来说毫无意义！</I></span>
+            </div>
+
+            {#                        踩js#}
+            <script>
+                function unlikeChange(obj, content_type, object_id) {
+                    let like = $('.glyphicon-thumbs-up');
+                    let is_unlike = obj.getElementsByClassName('active2').length == 0;
+                    if (like.hasClass("active1"))
+                        window.alert("您已经赞过！请先取消赞再踩！");
+                    else {
+                        $.ajax({
+                            url: "{% url 'unlike_change' %}",
+                            type: 'GET',
+                            data: {
+                                content_type: content_type,
+                                object_id: object_id,
+                                is_unlike: is_unlike
+                            },
+                            cache: false,
+                            success: function (data) {
+                                console.log(data)
+                                if (data['status'] == 'SUCCESS') {
+                                    // 更新点赞状态
+                                    let element = $(obj.getElementsByClassName('glyphicon glyphicon-thumbs-down'));
+                                    if (is_unlike) {
+                                        element.addClass('active2');
+                                        window.alert("点踩成功");
+                                    } else {
+                                        element.removeClass('active2');
+                                        window.alert("取消踩");
+                                    }
+                                    // 更新踩数量
+                                    let unliked_num = $(obj.getElementsByClassName('unliked-num'));
+                                    unliked_num.text(data['unliked_num']);
+                                } else {
+                                    alert(data['message']);
+                                }
+                            },
+                            error: function (xhr) {
+                                console.log(xhr)
+                            }
+                        });
+                    }
+                }
+            </script>
+            <br>
+            <br>
+            {#        提交回答#}
+            <div class="title">
+                <h3>回答</h3>
+            </div>
+            <button type="button" class="btn btn-primary" id="showHidden">点击切换富文本编辑器和markdown</button>
+            <div id="div1" class="article-comment" style="display:block">
+                <form action="" method="post" name="answerquestion">
+                    <textarea id="summernote" class="form-control" rows="8" placeholder="您的评论或留言（必填）"
+                              name="content" required></textarea>
+                    <input type="reset" class="btn btn-primary"><input class="btn btn-primary" type="submit"
+                                                                       onclick="shuaxin()" value="发表评论">
+                </form>
+            </div>
+
+            <div>
+                <div id="div2" class="article-comment" style="display:none">
+                    <form action="" method="post" name="answerquestion">
+                    <textarea id="markdowneditor" class="form-control" rows="8" placeholder="您的评论或留言（必填）"
+                              name="content" required></textarea>
+                        <input type="reset" class="btn btn-primary"><input type="submit" class="btn btn-primary"
+                                                                           onclick="shuaxin()" value="发表评论">
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                function show_hidden(obj) {
+                    if (obj.style.display == 'block') {
+                        obj.style.display = 'none';
+                    } else {
+                        obj.style.display = 'block';
+                    }
+                }
+
+                let sh = document.getElementById("showHidden");
+                sh.onclick = function () {
+                    let div1 = document.getElementById("div1");
+                    let div2 = document.getElementById("div2");
+                    show_hidden(div1);
+                    show_hidden(div2);
+                    return false;
+                }
+            </script>
+
+            {# 显示评论#}
+            <div class="postcomments">
+                <ol class="commentlist">
+                    {% for item in answer_list_obj %}
+                        <li class="comment-content"><span class="comment-f">{{ item.loushu }}楼</span>
+                            <div class="comment-main" style="overflow:auto">
+                                <p><a class="name" href="#" target="_blank">{{ item.useridnickname }}</a><span
+                                        class="time"> {{ item.update_time }}</span>
+                                    <br>
+                                <p>
+                                <div>
+                                    {% autoescape off %}
+                                        {{ item.content|safe }}
+                                    {% endautoescape %}
+                                </div>
+                                </p>
+                            </div>
+                            {% if questioninfo.giftpoint > 0 and current_user.id == questioninfo.userid %}
+                                {% if questioninfo.id != item.userid %}
+                                    <button class="btn btn-default"
+                                            onclick="senndgiftpoint(this,{{ questioninfo.id }},{{ questioninfo.giftpoint }},{{ questioninfo.userid }},{{ item.userid }})">
+                                        点击送出悬赏分
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+
+{#    赠送积分#}
+        <script>
+            function senndgiftpoint(obj, questionid, giftpoint, seeduserid, getuserid) {
+                $.ajax({
+                    url: "{% url 'stack_under_flow:give_point' %}",
+                    type: 'POST',
+                    data: {
+                        questionid: questionid,
+                        giftpoint: giftpoint,
+                        seeduserid: seeduserid,
+                        getuserid: getuserid,
+                    },
+                    cache: false,
+                    success: function (data) {
+                        console.log(data)
+                        if (data['status'] == 'SUCCESS') {
+                            // 更新点赞状态
+                            obj.innerHtml = "已赠送成功！";
+                            window.alert("赠送悬赏积分成功！");
+                            location.reload();
+                        } else {
+                            alert(data['message']);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.log(xhr)
+                    }
+                });
+            }
+        </script>
+
+
+        <div class="sidebar ">
+            <div class="widget widget_hot">
+                <h3>最新提出的问题</h3>
+                <ul>
+                    {% for item in newest_list_obj %}
+                        {% if forloop.counter <= 5 %}
+                            <li>
+                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                    <span class="text ">{{ item.title }}</span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-eye-open "></i> {{ item.view }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="widget widget_hot">
+                <h3>最热门的问题</h3>
+                <ul>
+                    {% for item in hotest_list_obj %}
+                        {% if forloop.counter <= 5 %}
+                            <li>
+                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                    <span class="text ">{{ item.title }}</span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-eye-open "></i> {{ item.view }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="widget widget_hot">
+                <h3>最有价值的问题</h3>
+                <ul>
+                    {% for item in mostvalueable_list_obj %}
+                        {% if forloop.counter <= 5 %}
+                            <li>
+                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                    <span class="text ">{{ item.title }}</span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                    <span class="muted ">
+                                            <i class="glyphicon glyphicon-thumbs-up"
+                                               style="color:rgb(0,154,97);font-size:10px"></i> {% get_like_count item %}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="widget widget_sentence">
+                <h3>标签云</h3>
+                {% for item in tags_list_obj %}
+                    <ul>
+                        <li><a href="{% url 'stack_under_flow:tag' item.pk %}">{{ item.tagname }} <span
+                                class="badge">{{ item.qcountintag }}</span></a></li>
+                    </ul>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer ">
+    <div class="container ">
+        <p>Copyright &copy; 2018.Stack Underflow All rights reserved</p>
+    </div>
+</div>
+</body>
+
+</html>
