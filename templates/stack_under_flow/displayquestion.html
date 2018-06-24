@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Home</title>
-{% load staticfiles %}
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/style.css' %} "/>
-<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<link type="text/css" rel="stylesheet" href="{% static 'css/code.css' %}"/>
-{% load likes_tags %}
-{#显示提示信息#}
-<script type="text/javascript">
-    function disp_alert() {
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags %}
-                    alert("{{ message }}")
-                {% endif %}
-            {% endfor %}
-        {% endif %}}
-</script>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Home</title>
+    {% load staticfiles %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %} "/>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static 'css/code.css' %}"/>
+    {% load likes_tags %}
+    {#显示提示信息#}
+    <script type="text/javascript">
+        function disp_alert() {
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags %}
+                        alert("{{ message }}")
+                    {% endif %}
+                {% endfor %}
+            {% endif %}}
+    </script>
 
 </head>
 
@@ -61,7 +61,9 @@
                     <li><a href="http://127.0.0.1:8000/users/login/">登陆</a></li>
                     <li><a href="{% url 'logout' %}?next={{ '/' }}">注销登录</a>
                     <li><a href="http://127.0.0.1:8000/stack_under_flow/commitquestion">发布问题</a></li>
-                    <li><a href="404.html">关于</a></li>
+                    {% if current_user.is_superuser == 1 %}
+                        <li><a href="http://127.0.0.1:8000/stack_under_flow/myadmin/">管理</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

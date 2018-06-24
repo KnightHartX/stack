@@ -113,6 +113,7 @@
                     <tr>
                         <th>回复者</th>
                         <th>回复时间</th>
+                        <th>回复的问题</th>
                         <th>内容</th>
                         <th>状态</th>
                     </tr>
@@ -123,8 +124,9 @@
                             <td>{{ item.sendmessage_usernickname }}</td>
                             <td>{{ item.message_sendtime }}</td>
                             <td>
-                                <a href="{% url 'stack_under_flow:questioninfo'  item.message_questionid %}">{{ item.message_content }}</a>
+                                <a href="{% url 'stack_under_flow:questioninfo'  item.message_questionid %}">{{ item.message_questiontitle }}</a>
                             </td>
+                            <td>{{ item.message_content }}</td>
                             {% if  item.message_status == 'unread' %}
                                 <td>消息未读</td>
                             {% else %}

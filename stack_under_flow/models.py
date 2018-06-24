@@ -70,6 +70,7 @@ class tag(models.Model):
 class message(models.Model):
     sendmessage_usernickname=models.CharField(max_length=500)
     receivemessage_usernickname=models.CharField(max_length=500)
+    message_questiontitle=models.CharField(max_length=500,default="测试")
     message_content=models.CharField(max_length=5000)
     message_sendtime=models.DateTimeField('发送时间', auto_now_add=True)
     message_questionid=models.IntegerField(default=0)

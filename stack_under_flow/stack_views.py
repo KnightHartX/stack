@@ -187,6 +187,7 @@ def questioninfo(request, para):
                 new_message=message()
                 new_message.sendmessage_usernickname=current_user.nickname
                 new_message.receivemessage_usernickname=questioninfo.useridnickname
+                new_message.message_questiontitle=questioninfo.title
                 new_message.message_content=strip_tags(content)
                 new_message.message_questionid=questioninfo.id
                 new_message.save()
@@ -467,6 +468,7 @@ def searchtable(request):
     return render(request, 'stack_under_flow/myadmin.html', locals())
 
 def deletetable(request):
+    current_user = request.user
     def ErrorResponse4(message):
         data = {}
         data['status'] = 'ERROR'
@@ -482,6 +484,13 @@ def deletetable(request):
         questiontodelete=question.objects.get(id=questionid)
         print("question的id值为:")
         print(questiontodelete.id)
+        delete_message=message()
+        delete_message.message_questionid=questionid
+        delete_message.receivemessage_usernickname=questiontodelete.useridnickname
+        delete_message.sendmessage_usernickname=current_user.nickname+"（管理员）"
+        delete_message.message_questiontitle="删除问题提醒"
+        delete_message.message_content="您的标题为“"+questiontodelete.title+"”的帖子已被管理员"+current_user.nickname+"删除，详情请联系管理员"
+        delete_message.save()
         questiontodelete.delete()
         return SuccessResponse4()
     except:
