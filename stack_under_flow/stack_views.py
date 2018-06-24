@@ -485,7 +485,7 @@ def deletetable(request):
         questiontodelete.delete()
         return SuccessResponse4()
     except:
-        return ErrorResponse4('删除问题失败')
+        return ErrorResponse4('删除问题失败!')
     # TODO 删帖功能完善，添加足够的信息
 
 # TODO 信息提醒功能
