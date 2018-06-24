@@ -486,9 +486,7 @@ def deletetable(request):
         return SuccessResponse4()
     except:
         return ErrorResponse4('删除问题失败!')
-    # TODO 删帖功能完善，添加足够的信息
 
-# TODO 信息提醒功能
 def mynews(request):
     # --旧的disquestion代码:--
     current_user = request.user

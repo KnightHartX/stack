@@ -97,7 +97,7 @@
                     </div>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
-                     <li><a>欢迎您，{{ tempnickname }}</a></li>
+                    <li><a>欢迎您，{{ tempnickname }}</a></li>
                     <li><a href="http://127.0.0.1:8000/stack_under_flow/mynews/">消息({{ unread_message_count }}未读)</a>
                     </li>
                     <li><a href="http://127.0.0.1:8000/stack_under_flow/my/">我的</a></li>
@@ -163,7 +163,71 @@
                     console.log('is_like');
                     console.log(is_like);
                     if (notlike.hasClass("active2")) {
-                        window.alert("您已经踩过！请先取消踩再点赞！");
+                        $.ajax({
+                            url: "{% url 'unlike_change' %}",
+                            type: 'GET',
+                            data: {
+                                content_type: content_type,
+                                object_id: object_id,
+                                is_unlike: false
+                            },
+                            cache: false,
+                            success: function (data) {
+                                console.log(data)
+                                if (data['status'] == 'SUCCESS') {
+                                    // 更新点赞状态
+                                    let element = $(obj.getElementsByClassName('glyphicon glyphicon-thumbs-down'));
+                                    {#if (is_unlike) {#}
+                                    {#    element.addClass('active2');#}
+                                    {#    window.alert("点踩成功");#}
+                                    // } else {
+                                    element.removeClass('active2');
+                                    {#window.alert("取消踩");#}
+                                    // }
+                                    // 更新踩数量
+                                    let unliked_num = $(obj.getElementsByClassName('unliked-num'));
+                                    unliked_num.text(data['unliked_num']);
+                                } else {
+                                    alert(data['message']);
+                                }
+                            },
+                            error: function (xhr) {
+                                console.log(xhr)
+                            }
+                        });
+                        $.ajax({
+                            url: "{% url 'like_change' %}",
+                            type: 'GET',
+                            data: {
+                                content_type: content_type,
+                                object_id: object_id,
+                                is_like: is_like
+                            },
+                            cache: false,
+                            success: function (data) {
+                                console.log(data)
+                                if (data['status'] == 'SUCCESS') {
+                                    // 更新点赞状态
+                                    let element = $(obj.getElementsByClassName('glyphicon glyphicon-thumbs-up'));
+                                    if (is_like) {
+                                        element.addClass('active1');
+                                        window.alert("点赞成功");
+                                    } else {
+                                        element.removeClass('active1');
+                                        window.alert("取消点赞");
+                                    }
+                                    // 更新点赞数量
+                                    let liked_num = $(obj.getElementsByClassName('liked-num'));
+                                    liked_num.text(data['liked_num']);
+                                } else {
+                                    alert(data['message']);
+                                }
+                            },
+                            error: function (xhr) {
+                                console.log(xhr)
+                            }
+                        });
+                        location.reload();
                     }
                     else {
                         $.ajax({
@@ -217,8 +281,73 @@
                 function unlikeChange(obj, content_type, object_id) {
                     let like = $('.glyphicon-thumbs-up');
                     let is_unlike = obj.getElementsByClassName('active2').length == 0;
-                    if (like.hasClass("active1"))
-                        window.alert("您已经赞过！请先取消赞再踩！");
+                    if (like.hasClass("active1")) {
+                        $.ajax({
+                            url: "{% url 'like_change' %}",
+                            type: 'GET',
+                            data: {
+                                content_type: content_type,
+                                object_id: object_id,
+                                is_like: false
+                            },
+                            cache: false,
+                            success: function (data) {
+                                console.log(data)
+                                if (data['status'] == 'SUCCESS') {
+                                    // 更新点赞状态
+                                    let element = $(obj.getElementsByClassName('glyphicon glyphicon-thumbs-up'));
+                                    {#if (is_like) {#}
+                                    {#    element.addClass('active1');#}
+                                    {#    window.alert("点赞成功");#}
+                                    //} else {
+                                    element.removeClass('active1');
+                                    //window.alert("取消点赞");
+                                    //}
+                                    // 更新点赞数量
+                                    let liked_num = $(obj.getElementsByClassName('liked-num'));
+                                    liked_num.text(data['liked_num']);
+                                } else {
+                                    alert(data['message']);
+                                }
+                            },
+                            error: function (xhr) {
+                                console.log(xhr)
+                            }
+                        });
+                        $.ajax({
+                            url: "{% url 'unlike_change' %}",
+                            type: 'GET',
+                            data: {
+                                content_type: content_type,
+                                object_id: object_id,
+                                is_unlike: is_unlike
+                            },
+                            cache: false,
+                            success: function (data) {
+                                console.log(data)
+                                if (data['status'] == 'SUCCESS') {
+                                    // 更新点赞状态
+                                    let element = $(obj.getElementsByClassName('glyphicon glyphicon-thumbs-down'));
+                                    if (is_unlike) {
+                                        element.addClass('active2');
+                                        window.alert("点踩成功");
+                                    } else {
+                                        element.removeClass('active2');
+                                        window.alert("取消踩");
+                                    }
+                                    // 更新踩数量
+                                    let unliked_num = $(obj.getElementsByClassName('unliked-num'));
+                                    unliked_num.text(data['unliked_num']);
+                                } else {
+                                    alert(data['message']);
+                                }
+                            },
+                            error: function (xhr) {
+                                console.log(xhr)
+                            }
+                        });
+                        location.reload();
+                    }
                     else {
                         $.ajax({
                             url: "{% url 'unlike_change' %}",
@@ -332,7 +461,7 @@
             </div>
         </div>
 
-{#    赠送积分#}
+        {#    赠送积分#}
         <script>
             function senndgiftpoint(obj, questionid, giftpoint, seeduserid, getuserid) {
                 $.ajax({
