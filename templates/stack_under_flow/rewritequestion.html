@@ -122,7 +122,7 @@
 <br>
 <br>
 <div id="div1" class="article-comment" style="display:block">
-    <form action={% url 'stack_under_flow:commitquestion' %}  method="post" name="commitquestion">
+    <form action="" method="post" name="commitquestion">
         <p><span></span><input class="form-control" type="text" placeholder="请输入问题" name="title" id="title1" required>
         </p>
         <p><span></span><input type="number" id="giftpoint1" value="0" min="0" class="form-control"
@@ -138,12 +138,47 @@
         {#        {% endfor %}#}
         {% for item in tags_list_obj %}
             <label class="checkbox-inline">
-                <input value="{{ item.tagname }}" type="checkbox" name="tags"/>{{ item.tagname }}
+                <input value="{{ item.tagname }}" type="checkbox" name="tags" id="tags1"/>{{ item.tagname }}
             </label>
         {% endfor %}
         <br>
-        <input type="reset" class="btn btn-primary"><input type="submit" class="btn btn-primary" value="提交问题">
+        <input type="reset" class="btn btn-primary">
+        <button class="btn btn-primary" onclick="sendquestion1()">提交问题</button>
     </form>
+    <script>
+        function sendquestion1() {
+            let questionid = localStorage.getItem('questionid');//key要用单引号或者双引号包括着
+            console.log("问题的id为"+questionid);
+            let title = $("#title1").val();
+            let giftpoint=$("#giftpoint1").val();
+            let content = $('#summernote').summernote('code');
+            {#let tags=$("#tags1").val();#}
+            $.ajax({
+                url: "{% url 'stack_under_flow:commitrewritequestion' %}",
+                type: 'POST',
+                data: {
+                    questionid:questionid,
+                    title:title,
+                    giftpoint:giftpoint,
+                    content:content,
+                    {#tags:tags#}
+                },
+                cache: false,
+                success: function (data) {
+                    console.log(data)
+                    if (data['status'] == 'SUCCESS') {
+                        alert("修改问题成功！");
+                        window.location.href = "http://127.0.0.1:8000/stack_under_flow/questioninfo/"+questionid;
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr)
+                }
+            });
+        }
+    </script>
 </div>
 
 <div>
