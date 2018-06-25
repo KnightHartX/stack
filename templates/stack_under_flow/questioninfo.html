@@ -138,6 +138,24 @@
                     {% endautoescape %}
                 </div>
             </article>
+            {% if current_user.nickname == questioninfo.useridnickname %}
+                <div>
+                    <button class="btn btn-primary" onclick="rewritequestion({{ questioninfo.id }})">点击修改问题</button>
+                </div>
+            {% endif %}
+            <script>
+                function rewritequestion(questionid) {
+                    //由于是一个新的技术，你可以通过下面的代码检测你的浏览器是否支持
+                    if (window.localStorage) {
+                        //存储变量的值
+                        localStorage.questionid = questionid;
+                        location.href = './b.html';
+                    } else {
+                        alert("NOT SUPPORT");
+                    }
+                    window.location.href = "";
+                }
+            </script>
             <h3><B>您感觉这个问题有价值么？</B></h3>
             {#        点赞#}
             <div class="like" onclick="likeChange(this, '{% get_content_type questioninfo %}', {{ questioninfo.id }})">

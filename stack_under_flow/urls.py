@@ -16,4 +16,5 @@ urlpatterns = [
     url('deletetable', stack_views.deletetable, name='deletetable'),
     url('mynews', stack_views.mynews, name='mynews'),
     url('readallmessage', stack_views.readallmessage, name='readallmessage'),
+    url('rewritequestion', stack_views.rewritequestion, name='rewritequestion'),
 ]

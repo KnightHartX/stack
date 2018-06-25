@@ -99,6 +99,89 @@ def commitquestion(request):
 
     return render(request, 'stack_under_flow/commitquestion.html', locals())
 
+def rewritequestion(request):
+    current_user = request.user
+    if current_user.is_anonymous:
+        tempnickname = "游客"
+    else:
+        tempnickname = current_user.nickname
+
+    if current_user.is_anonymous:
+        messages.info(request, '请登录后再发表问题！')
+        return HttpResponseRedirect('/')
+
+    if request.method == "POST":
+        try:
+
+            title = request.POST["title"]
+            content = markdown(request.POST["content"], extensions=[
+                'markdown.extensions.extra',
+                'markdown.extensions.codehilite',
+                'markdown.extensions.toc',
+            ])
+            giftpoint = request.POST["giftpoint"]
+            print(title)
+            print(content)
+            print(giftpoint)
+            int_giftpoint = int(giftpoint)
+            if current_user.point < int_giftpoint:
+                messages.info(request, '悬赏分数大于用户积分，请重新输入！')
+                return HttpResponseRedirect('http://127.0.0.1:8000/stack_under_flow/commitquestion/')
+            else:
+                pass
+            # 先增加相关问题信息
+            questioncommit = question()
+            questioncommit.title = title
+            questioncommit.content = content
+            questioncommit.contentstring = strip_tags(content)
+            questioncommit.userid = current_user.id
+            questioncommit.useridnickname = current_user.nickname
+            questioncommit.giftpoint = int_giftpoint
+            questioncommit.save()
+
+            # 添加相关项目的标签(避免使用ajax的方法！)
+            # a = questioncommit
+            # alltags = tag.objects.all()
+            # for item in alltags:
+            #     if (request.POST[item.tagname])!=None:
+            #         tagsname=request.POST[item.tagname]
+            #         print(tagsname)
+            #         b = tag.objects.get(tagname=tagsname)
+            #         k = b.qcountintag
+            #         a.tag_questions.add(b)
+            #         b.qcountintag = k + 1
+            #         b.save()
+            a = questioncommit
+            alltags=tag.objects.all()
+            tags = request.POST.getlist('tags')
+            for item in tags:
+                b = tag.objects.get(tagname=item)
+                k = b.qcountintag
+                a.tag_questions.add(b)
+                b.qcountintag = k + 1
+                b.save()
+
+            obj = User.objects.get(id=current_user.id)
+            p = obj.point + 2
+            obj.point = p
+            obj.save()
+            messages.info(request, '提交问题成功！')
+
+            # 转到相关问题
+            latestquestion = question.objects.latest('id')
+            idnum = str(latestquestion.id)
+            netstring = "http://127.0.0.1:8000/stack_under_flow/questioninfo/"
+            return HttpResponseRedirect(netstring + idnum)
+        except:
+            messages.info(request, '提交问题失败！')
+
+    # 传递标签
+    tags_list_obj = tag.objects.all()
+
+    # 显示未读消息数目
+    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+
+    return render(request, 'stack_under_flow/commitquestion.html', locals())
 
 def displayquestion(request):
     current_user = request.user
