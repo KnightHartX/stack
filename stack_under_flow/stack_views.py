@@ -28,9 +28,9 @@ def commitquestion(request):
 
     if request.method == "POST":
         try:
-
+            beforemarkdown_content=request.POST["content"]
             title = request.POST["title"]
-            content = markdown(request.POST["content"], extensions=[
+            content = markdown(beforemarkdown_content, extensions=[
                 'markdown.extensions.extra',
                 'markdown.extensions.codehilite',
                 'markdown.extensions.toc',
@@ -49,6 +49,7 @@ def commitquestion(request):
             questioncommit = question()
             questioncommit.title = title
             questioncommit.content = content
+            questioncommit.beforemarkdown=beforemarkdown_content
             questioncommit.contentstring = strip_tags(content)
             questioncommit.userid = current_user.id
             questioncommit.useridnickname = current_user.nickname
@@ -181,7 +182,7 @@ def rewritequestion(request):
     # 显示未读消息数目
     unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
 
-    return render(request, 'stack_under_flow/commitquestion.html', locals())
+    return render(request, 'stack_under_flow/rewritequestion.html', locals())
 
 def displayquestion(request):
     current_user = request.user
@@ -646,3 +647,28 @@ def readallmessage(request):
         return SuccessResponse5()
     except:
         return ErrorResponse5('设置所有消息已读失败')
+
+def returnquestioninfo(request):
+    def ErrorResponse6(message):
+        data = {}
+        data['status'] = 'ERROR'
+        data['message'] = message
+        return JsonResponse(data)
+
+    def SuccessResponse6(title,content,giftpoint,beforemarkdown):
+        data = {}
+        data['status'] = 'SUCCESS'
+        data['title']=title
+        data['giftpoint']=giftpoint
+        data['content']=content
+        data['beforemarkdown']=beforemarkdown
+        return JsonResponse(data)
+
+    try:
+        questionid = request.GET.get('questionid')
+        print(questionid)
+        old_question = question.objects.get(id=questionid)
+        return SuccessResponse6(old_question.title,old_question.content,old_question.giftpoint,old_question.beforemarkdown)
+    except:
+        return ErrorResponse6('获取该问题信息失败！')
+

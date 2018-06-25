@@ -69,7 +69,7 @@
     </style>
 </head>
 
-<body onload="disp_alert()">
+<body onload="disp_alert();getdata()">
 
 <header>
     <nav class="navbar navbar-default" id="navbar">
@@ -123,8 +123,9 @@
 <br>
 <div id="div1" class="article-comment" style="display:block">
     <form action={% url 'stack_under_flow:commitquestion' %}  method="post" name="commitquestion">
-        <p><span></span><input class="form-control" type="text" placeholder="请输入问题" name="title" required></p>
-        <p><span></span><input type="number" value="0" min="0" class="form-control"
+        <p><span></span><input class="form-control" type="text" placeholder="请输入问题" name="title" id="title1" required>
+        </p>
+        <p><span></span><input type="number" id="giftpoint1" value="0" min="0" class="form-control"
                                placeholder="请输入悬赏的积分(不得超过目前已有的积分)，您目前的积分为{{ current_user.point }}" name="giftpoint"
                                required></p>
         <textarea id="summernote" class="form-control" rows="8" placeholder="请输入您的问题详情"
@@ -148,8 +149,8 @@
 <div>
     <div id="div2" class="article-comment" style="display:none">
         <form action={% url 'stack_under_flow:commitquestion' %}  method="post" name="commitquestion">
-            <p><span></span><input type="text" class="form-control" placeholder="请输入问题" name="title"></p>
-            <p><span></span><input type="number" value="0" min="0" class="form-control"
+            <p><span></span><input type="text" class="form-control" placeholder="请输入问题" name="title" id="title2"></p>
+            <p><span></span><input type="number" id="giftpoint2" value="0" min="0" class="form-control"
                                    placeholder="请输入悬赏的积分(不得超过目前已有的积分)，您目前的积分为{{ current_user.point }}" name="giftpoint"
                                    required></p>
             <textarea id="markdowneditor" class="form-control" rows="8" placeholder="请输入您的问题详情"
@@ -171,6 +172,37 @@
         </form>
     </div>
 </div>
+
+<script>
+    function getdata() {
+        let questionid = localStorage.getItem('questionid');//key要用单引号或者双引号包括着,用一变量存起来方便使用
+        alert(questionid);
+        $.ajax({
+            url: "{% url 'stack_under_flow:returnquestioninfo' %}",
+            type: 'GET',
+            data: {
+                questionid: questionid
+            },
+            cache: false,
+            success: function (data) {
+                console.log(data)
+                if (data['status'] == 'SUCCESS') {
+                    $("#title1").val(data['title']);
+                    $("#giftpoint1").val(data['giftpoint']);
+                    $('#summernote').summernote('code', data['content']);
+                    $("#title2").val(data['title']);
+                    $("#giftpoint2").val(data['giftpoint']);
+                    $("#markdowneditor").val(data['beforemarkdown']);
+                } else {
+                    alert(data['message']);
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr)
+            }
+        });
+    }
+</script>
 <script>
     function show_hidden(obj) {
         if (obj.style.display == 'block') {

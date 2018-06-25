@@ -24,6 +24,7 @@ from django.contrib.auth.models import AbstractUser
 # 问题的模型
 class question(models.Model):
     title = models.CharField(max_length=1000)
+    beforemarkdown=models.CharField(max_length=5000,default='# 555')
     content = models.CharField(max_length=5000)
     contentstring=models.CharField(max_length=5000)
     userid = models.IntegerField(default=114514)

@@ -148,12 +148,12 @@
 <div>
     <div id="div2" class="article-comment" style="display:none">
         <form action={% url 'stack_under_flow:commitquestion' %}  method="post" name="commitquestion">
-            <p><span></span><input type="text" class="form-control" placeholder="请输入问题" name="title"></p>
+            <p><span></span><input type="text" class="form-control" placeholder="请输入问题" name="title" ></p>
             <p><span></span><input type="number" value="0" min="0" class="form-control"
                                    placeholder="请输入悬赏的积分(不得超过目前已有的积分)，您目前的积分为{{ current_user.point }}" name="giftpoint"
-                                   required></p>
+                                   required ></p>
             <textarea id="markdowneditor" class="form-control" rows="8" placeholder="请输入您的问题详情"
-                      name="content" required></textarea>
+                      name="content"  required></textarea>
             <span>请选择该问题的类型</span>
 
             {#            {% for item in tags_list_obj %}#}
