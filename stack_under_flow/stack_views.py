@@ -96,7 +96,10 @@ def commitquestion(request):
     tags_list_obj = tag.objects.all()
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     return render(request, 'stack_under_flow/commitquestion.html', locals())
 
@@ -134,7 +137,10 @@ def displayquestion(request):
     tags_list_obj = tag.objects.all()
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     return render(request, 'stack_under_flow/displayquestion.html', locals())
 
@@ -240,7 +246,10 @@ def questioninfo(request, para):
     mostvalueable_list_obj = question.objects.all().order_by('-answercount')
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     return render(request, 'stack_under_flow/questioninfo.html', locals())
 
@@ -267,7 +276,10 @@ def itemsintag(request, para):
     tags_list_obj = tag.objects.all()
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     # 查询该标签下所有问题
     tagnamedisplay = tag.objects.get(id=para)
@@ -311,7 +323,10 @@ def search(request):
     tags_list_obj = tag.objects.all()
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     # --旧的代码到此为止，看情况复用
 
@@ -360,7 +375,10 @@ def my(request):
     mostvalueable_list_obj = question.objects.all().order_by('-answercount')
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     # --旧的代码到此为止，看情况复用
 
@@ -452,7 +470,10 @@ def myadmin(request):
     mostvalueable_list_obj = question.objects.all().order_by('-answercount')
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     # --旧的代码到此为止，看情况复用
     if current_user.is_superuser:
@@ -500,7 +521,10 @@ def searchtable(request):
     mostvalueable_list_obj = question.objects.all().order_by('-answercount')
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     # --旧的代码到此为止，看情况复用
     if current_user.is_superuser:
@@ -586,7 +610,10 @@ def mynews(request):
     mostvalueable_list_obj = question.objects.all().order_by('-answercount')
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     # --旧的代码到此为止，看情况复用
 
@@ -737,7 +764,10 @@ def rewritequestion(request):
     tags_list_obj = tag.objects.all()
 
     # 显示未读消息数目
-    unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    if current_user.is_authenticated:
+        unread_message_count=message.objects.filter(receivemessage_usernickname=current_user.nickname,message_status='unread').count()
+    else:
+        unread_message_count="0"
 
     return render(request, 'stack_under_flow/rewritequestion.html', locals())
 
