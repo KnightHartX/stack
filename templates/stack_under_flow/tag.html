@@ -98,7 +98,8 @@
                         {% endautoescape %}
                     </div>
                     <p class="meta">
-                        <a class="time"><i class="glyphicon glyphicon-time"></i> {{ item.update_time }}</a>
+                        <a class="time"><i class="glyphicon glyphicon-time"></i> 创建于{{ item.update_time }}</a>
+                        <a class="time"><i class="glyphicon glyphicon-time"></i>编辑于 {{ item.rewrite_time }}</a>
                         <a class="views"><i class="glyphicon glyphicon-eye-open"></i> 阅读量（{{ item.view }}）</a>
                         <a class="comment" href="{% url 'stack_under_flow:questioninfo'  item.id %}"><i
                                 class="glyphicon glyphicon-comment"></i> 回答数目( {{ item.answercount }})
@@ -117,7 +118,7 @@
                 {% if tagsquestions.has_previous %}
                     {#  当前页的上一页按钮正常使用#}
                     <li class="previous"><a
-                            href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id}}/?page={{ tagsquestions.previous_page_number }}">上一页</a>
+                            href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id }}/?page={{ tagsquestions.previous_page_number }}">上一页</a>
                     </li>
                 {% else %}
                     {# 当前页的不存在上一页时,上一页的按钮不可用#}
@@ -133,7 +134,7 @@
                         </li>
                     {% else %}
                         <li class="item"><a
-                                href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id  }}/?page={{ num }}">{{ num }}</a>
+                                href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id }}/?page={{ num }}">{{ num }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
@@ -141,7 +142,7 @@
                 {# 下一页按钮开始#}
                 {% if tagsquestions.has_next %}
                     <li class="next"><a
-                            href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id  }}/?page={{ tagsquestions.next_page_number }}">下一页</a>
+                            href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id }}/?page={{ tagsquestions.next_page_number }}">下一页</a>
                     </li>
                 {% else %}
                     <li class="next disabled"><a href="#">下一页</a></li>

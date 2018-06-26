@@ -178,13 +178,14 @@ def questioninfo(request, para):
     questioninfo.save()
 
     # 点击进入相关问题界面，消息已读
-    read_message_count=message.objects.filter(message_questionid=para)
-    for item in read_message_count:
-        if current_user.nickname==item.receivemessage_usernickname:
-            item.message_status='read'
-            item.save()
-        else:
-            pass
+    if current_user.is_authenticated:
+        read_message_count=message.objects.filter(message_questionid=para)
+        for item in read_message_count:
+            if current_user.nickname==item.receivemessage_usernickname:
+                item.message_status='read'
+                item.save()
+            else:
+                pass
     # 显示标签
     tagdisplay = questioninfo.tag_questions.all()
 
@@ -596,7 +597,9 @@ def mynews(request):
         tempnickname = "游客"
     else:
         tempnickname = current_user.nickname
-
+    if current_user.is_anonymous:
+        messages.info(request, '请先登录再查看自己的消息！')
+        return redirect('/')
     # 传递标签
     tags_list_obj = tag.objects.all()
 
