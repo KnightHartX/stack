@@ -84,6 +84,43 @@
     <div class="content-wrap">
         <div class="content">
             <div class="title">
+                <h3>添加标签</h3>
+            </div>
+            <div>
+                <form action="" method="post" name="addtag">
+                    <p><span></span><input class="form-control" type="text" placeholder="请输入要添加的标签" name="addtag"
+                                           id="addtag"
+                                           required></p>
+                    <button class="btn btn-primary" onclick="addatag()">添加标签</button>
+                </form>
+                <script>
+                    function addatag() {
+                        let tagname = $("#addtag").val();
+                        console.log(tagname);
+                        $.ajax({
+                            url: "{% url 'stack_under_flow:addtag' %}",
+                            type: 'POST',
+                            data: {
+                                tagname: tagname
+                            },
+                            cache: false,
+                            success: function (data) {
+                                console.log(data)
+                                if (data['status'] == 'SUCCESS') {
+                                    alert("添加标签成功！");
+                                } else {
+                                    alert(data['message']);
+                                }
+                            },
+                            error: function (xhr) {
+                                console.log(xhr)
+                            }
+                        });
+                    }
+                </script>
+            </div>
+            <br>
+            <div class="title">
                 <h3>所有问题</h3>
             </div>
             <div>
@@ -95,7 +132,6 @@
                         <th>标题</th>
                         <th>提问者</th>
                         <th>内容</th>
-                        <th>链接</th>
                         <th>操作</th>
                     </tr>
                     </thead>
@@ -108,7 +144,7 @@
                             <td>{{ item.contentstring }}</td>
                             <td>
                                 <div>
-                                    <button class="btn btn-default"
+                                    <button class="btn btn-danger"
                                             onclick="deleteit({{ item.id }})">
                                         删除
                                     </button>

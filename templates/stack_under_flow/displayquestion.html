@@ -99,7 +99,7 @@
                     </div>
                     <p class="meta">
                         <a class="time"><i class="glyphicon glyphicon-time"></i> 创建于{{ item.update_time }}</a>
-                         <a class="time"><i class="glyphicon glyphicon-time"></i>编辑于 {{ item.rewrite_time }}</a>
+                        <a class="time"><i class="glyphicon glyphicon-time"></i>编辑于 {{ item.rewrite_time }}</a>
                         <a class="views"><i class="glyphicon glyphicon-eye-open"></i> 阅读量（{{ item.view }}）</a>
                         <a class="comment" href="{% url 'stack_under_flow:questioninfo'  item.id %}"><i
                                 class="glyphicon glyphicon-comment"></i> 回答数目( {{ item.answercount }})
@@ -113,85 +113,122 @@
                     </p>
                 </div>
             {% endfor %}
+            <ul class="pagination" id="pager">
+                {#上一页按钮开始#}
+                {# 如果当前页有上一页#}
+                {% if question_list_obj.has_previous %}
+                    {#  当前页的上一页按钮正常使用#}
+                    <li class="previous"><a
+                            href="http://127.0.0.1:8000/stack_under_flow/displayquestion/?page={{ question_list_obj.previous_page_number }}">上一页</a>
+                    </li>
+                {% else %}
+                    {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                    <li class="previous disabled"><a href="#">上一页</a></li>
+                {% endif %}
+                {#上一页按钮结束#}
+                {# 页码开始#}
+                {% for num in paginator.page_range %}
 
-        </div>
-
-        <div class="sidebar">
-            <div class="widget widget_hot">
-                <h3>最新提出的问题</h3>
-                <ul>
-                    {% for item in newest_list_obj %}
-                        {% if forloop.counter <= 5 %}
-                            <li>
-                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
-                                    <span class="text ">{{ item.title }}</span>
-                                    <span class="muted ">
-                                            <i class="glyphicon glyphicon-time "></i>
-                                            {{ item.update_time }}
-                                        </span>
-                                    <span class="muted ">
-                                            <i class="glyphicon glyphicon-eye-open "></i> {{ item.view }}</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div class="widget widget_hot">
-                <h3>最热门的问题</h3>
-                <ul>
-                    {% for item in hotest_list_obj %}
-                        {% if forloop.counter <= 5 %}
-                            <li>
-                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
-                                    <span class="text ">{{ item.title }}</span>
-                                    <span class="muted ">
-                                            <i class="glyphicon glyphicon-time "></i>
-                                            {{ item.update_time }}
-                                        </span>
-                                    <span class="muted ">
-                                            <i class="glyphicon glyphicon-eye-open "></i> {{ item.view }}</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div class="widget widget_hot">
-                <h3>最有价值的问题</h3>
-                <ul>
-                    {% for item in mostvalueable_list_obj %}
-                        {% if forloop.counter <= 5 %}
-                            <li>
-                                <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
-                                    <span class="text ">{{ item.title }}</span>
-                                    <span class="muted ">
-                                            <i class="glyphicon glyphicon-time "></i>
-                                            {{ item.update_time }}
-                                        </span>
-                                    <span class="muted ">
-                                            <i class="glyphicon glyphicon-thumbs-up"
-                                               style="color:rgb(0,154,97);font-size:10px"></i> {% get_like_count item %}</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div class="widget widget_sentence">
-                <h3>标签云</h3>
-                {% for item in tags_list_obj %}
-                    <ul>
-                        <li><a href="{% url 'stack_under_flow:tag' item.pk %}">{{ item.tagname }} <span
-                                class="badge">{{ item.qcountintag }}</span></a></li>
-                    </ul>
+                    {% if num == currentPage %}
+                        <li class="item active"><a
+                                href="http://127.0.0.1:8000/stack_under_flow/displayquestion/?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="item"><a
+                                href="http://127.0.0.1:8000/stack_under_flow/displayquestion/?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
                 {% endfor %}
-            </div>
+                {#页码结束#}
+                {# 下一页按钮开始#}
+                {% if question_list_obj.has_next %}
+                    <li class="next"><a
+                            href="http://127.0.0.1:8000/stack_under_flow/displayquestion/?page={{ question_list_obj.next_page_number }}">下一页</a>
+                    </li>
+                {% else %}
+                    <li class="next disabled"><a href="#">下一页</a></li>
+                {% endif %}
+                {# 下一页按钮结束#}
+            </ul>
         </div>
     </div>
+
+    <div class="sidebar">
+        <div class="widget widget_hot">
+            <h3>最新提出的问题</h3>
+            <ul>
+                {% for item in newest_list_obj %}
+                    {% if forloop.counter <= 5 %}
+                        <li>
+                            <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                <span class="text ">{{ item.title }}</span>
+                                <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                <span class="muted ">
+                                            <i class="glyphicon glyphicon-eye-open "></i> {{ item.view }}</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="widget widget_hot">
+            <h3>最热门的问题</h3>
+            <ul>
+                {% for item in hotest_list_obj %}
+                    {% if forloop.counter <= 5 %}
+                        <li>
+                            <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                <span class="text ">{{ item.title }}</span>
+                                <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                <span class="muted ">
+                                            <i class="glyphicon glyphicon-eye-open "></i> {{ item.view }}</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="widget widget_hot">
+            <h3>最有价值的问题</h3>
+            <ul>
+                {% for item in mostvalueable_list_obj %}
+                    {% if forloop.counter <= 5 %}
+                        <li>
+                            <a title=" " href="{% url 'stack_under_flow:questioninfo'  item.id %}">
+                                <span class="text ">{{ item.title }}</span>
+                                <span class="muted ">
+                                            <i class="glyphicon glyphicon-time "></i>
+                                            {{ item.update_time }}
+                                        </span>
+                                <span class="muted ">
+                                            <i class="glyphicon glyphicon-thumbs-up"
+                                               style="color:rgb(0,154,97);font-size:10px"></i> {% get_like_count item %}</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="widget widget_sentence">
+            <h3>标签云</h3>
+            {% for item in tags_list_obj %}
+                <ul>
+                    <li><a href="{% url 'stack_under_flow:tag' item.pk %}">{{ item.tagname }} <span
+                            class="badge">{{ item.qcountintag }}</span></a></li>
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 </div>
 
 <div class="footer">

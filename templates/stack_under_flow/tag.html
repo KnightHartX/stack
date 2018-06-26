@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Home</title>
-{% load staticfiles %}
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.min.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/style.css' %} "/>
-<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<link type="text/css" rel="stylesheet" href="{% static 'css/code.css' %}"/>
-{% load likes_tags %}
-{#显示提示信息#}
-<script type="text/javascript">
-    function disp_alert() {
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags %}
-                    alert("{{ message }}")
-                {% endif %}
-            {% endfor %}
-        {% endif %}}
-</script>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Home</title>
+    {% load staticfiles %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %} "/>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static 'css/code.css' %}"/>
+    {% load likes_tags %}
+    {#显示提示信息#}
+    <script type="text/javascript">
+        function disp_alert() {
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags %}
+                        alert("{{ message }}")
+                    {% endif %}
+                {% endfor %}
+            {% endif %}}
+    </script>
 
 </head>
 
@@ -111,6 +111,43 @@
                     </p>
                 </div>
             {% endfor %}
+            <ul class="pagination" id="pager">
+                {#上一页按钮开始#}
+                {# 如果当前页有上一页#}
+                {% if tagsquestions.has_previous %}
+                    {#  当前页的上一页按钮正常使用#}
+                    <li class="previous"><a
+                            href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id}}/?page={{ tagsquestions.previous_page_number }}">上一页</a>
+                    </li>
+                {% else %}
+                    {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                    <li class="previous disabled"><a href="#">上一页</a></li>
+                {% endif %}
+                {#上一页按钮结束#}
+                {# 页码开始#}
+                {% for num in paginator.page_range %}
+
+                    {% if num == currentPage %}
+                        <li class="item active"><a
+                                href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id }}/?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="item"><a
+                                href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id  }}/?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {#页码结束#}
+                {# 下一页按钮开始#}
+                {% if tagsquestions.has_next %}
+                    <li class="next"><a
+                            href="http://127.0.0.1:8000/stack_under_flow/tag/{{ tagnamedisplay.id  }}/?page={{ tagsquestions.next_page_number }}">下一页</a>
+                    </li>
+                {% else %}
+                    <li class="next disabled"><a href="#">下一页</a></li>
+                {% endif %}
+                {# 下一页按钮结束#}
+            </ul>
         </div>
 
 

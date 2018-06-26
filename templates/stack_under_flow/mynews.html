@@ -139,37 +139,13 @@
                     </tbody>
                 </table>
             </div>
-            <script>
-                function deleteit(questionid) {
-                    $.ajax({
-                        url: "{% url 'stack_under_flow:deletetable' %}",
-                        type: 'POST',
-                        data: {
-                            questionid: questionid,
-                        },
-                        cache: false,
-                        success: function (data) {
-                            console.log(data)
-                            if (data['status'] == 'SUCCESS') {
-                                window.alert("删除成功！");
-                                location.reload();
-                            } else {
-                                alert(data['message']);
-                            }
-                        },
-                        error: function (xhr) {
-                            console.log(xhr)
-                        }
-                    });
-                }
-            </script>
             <ul class="pagination" id="pager">
                 {#上一页按钮开始#}
                 {# 如果当前页有上一页#}
-                {% if questiontable.has_previous %}
+                {% if mymessage.has_previous %}
                     {#  当前页的上一页按钮正常使用#}
                     <li class="previous"><a
-                            href="http://127.0.0.1:8000/stack_under_flow/myadmin/?page={{ questiontable.previous_page_number }}">上一页</a>
+                            href="http://127.0.0.1:8000/stack_under_flow/mynews/?page={{ mymessage.previous_page_number }}">上一页</a>
                     </li>
                 {% else %}
                     {# 当前页的不存在上一页时,上一页的按钮不可用#}
@@ -181,18 +157,18 @@
 
                     {% if num == currentPage %}
                         <li class="item active"><a
-                                href="http://127.0.0.1:8000/stack_under_flow/myadmin/?page={{ num }}">{{ num }}</a></li>
+                                href="http://127.0.0.1:8000/stack_under_flow/mynews/?page={{ num }}">{{ num }}</a></li>
                     {% else %}
                         <li class="item"><a
-                                href="http://127.0.0.1:8000/stack_under_flow/myadmin/?page={{ num }}">{{ num }}</a></li>
+                                href="http://127.0.0.1:8000/stack_under_flow/mynews/?page={{ num }}">{{ num }}</a></li>
 
                     {% endif %}
                 {% endfor %}
                 {#页码结束#}
                 {# 下一页按钮开始#}
-                {% if questiontable.has_next %}
+                {% if mymessage.has_next %}
                     <li class="next"><a
-                            href="http://127.0.0.1:8000/stack_under_flow/myadmin/?page={{ questiontable.next_page_number }}">下一页</a>
+                            href="http://127.0.0.1:8000/stack_under_flow/mynews/?page={{ mymessage.next_page_number }}">下一页</a>
                     </li>
                 {% else %}
                     <li class="next disabled"><a href="#">下一页</a></li>

@@ -107,6 +107,20 @@ def displayquestion(request):
     else:
         tempnickname = current_user.nickname
     question_list_obj = question.objects.all()
+    # 生成paginator对象,定义每页显示10条记录
+    paginator = Paginator(question_list_obj, 10)
+    # 从前端获取当前的页码数,默认为1
+    page = request.GET.get('page', 1)
+    # 把当前的页码数转换成整数类型
+    currentPage = int(page)
+
+    try:
+        print(page)
+        question_list_obj = paginator.page(page)  # 获取当前页码的记录
+    except PageNotAnInteger:
+        question_list_obj = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
+    except EmptyPage:
+        question_list_obj = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
     # 显示最新问题
     newest_list_obj = question.objects.all().order_by('-update_time')
 
@@ -129,6 +143,20 @@ def questioninfo(request, para):
     # 显示问题详情
     # print(para)
     answer_list_obj = answer.objects.filter(questionid=para)
+    # 生成paginator对象,定义每页显示10条记录
+    paginator = Paginator(answer_list_obj, 10)
+    # 从前端获取当前的页码数,默认为1
+    page = request.GET.get('page', 1)
+    # 把当前的页码数转换成整数类型
+    currentPage = int(page)
+
+    try:
+        print(page)
+        answer_list_obj = paginator.page(page)  # 获取当前页码的记录
+    except PageNotAnInteger:
+        qanswer_list_obj = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
+    except EmptyPage:
+        answer_list_obj = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
 
     # 判断用户名
     current_user = request.user
@@ -219,7 +247,6 @@ def questioninfo(request, para):
 
 def itemsintag(request, para):
     # print(para)
-
     # 显示用户名
     current_user = request.user
     if current_user.is_anonymous:
@@ -245,6 +272,21 @@ def itemsintag(request, para):
     # 查询该标签下所有问题
     tagnamedisplay = tag.objects.get(id=para)
     tagsquestions = (tag.objects.get(id=para)).questions.all()
+    # 生成paginator对象,定义每页显示10条记录
+    paginator = Paginator(tagsquestions, 10)
+    # 从前端获取当前的页码数,默认为1
+    page = request.GET.get('page', 1)
+    # 把当前的页码数转换成整数类型
+    currentPage = int(page)
+
+    try:
+        print(page)
+        tagsquestions = paginator.page(page)  # 获取当前页码的记录
+    except PageNotAnInteger:
+        tagsquestions = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
+    except EmptyPage:
+        tagsquestions = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
+    # 显示最新问题
     return render(request, 'stack_under_flow/tag.html', locals())
 
 
@@ -279,6 +321,21 @@ def search(request):
         error_msg = "请输入关键词"
         return render(request, 'stack_under_flow/displayquestion.html', {'error_msg': error_msg})
     question_list_obj = question.objects.filter(Q(title__icontains=q) | Q(content__icontains=q))
+    # 生成paginator对象,定义每页显示10条记录
+    paginator = Paginator(question_list_obj, 10)
+    # 从前端获取当前的页码数,默认为1
+    page = request.GET.get('page', 1)
+    # 把当前的页码数转换成整数类型
+    currentPage = int(page)
+
+    try:
+        print(page)
+        question_list_obj = paginator.page(page)  # 获取当前页码的记录
+    except PageNotAnInteger:
+        question_list_obj = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
+    except EmptyPage:
+        question_list_obj = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
+    # 显示最新问题
     return render(request, 'stack_under_flow/displayquestion.html', locals())
 
 
@@ -312,7 +369,20 @@ def my(request):
         return HttpResponseRedirect('/')
     else:
         myquestions_list_obj = question.objects.filter(userid=current_user.id).order_by('-update_time')
-        print(myquestions_list_obj)
+        # print(myquestions_list_obj)
+        paginator = Paginator(myquestions_list_obj, 10)
+        # 从前端获取当前的页码数,默认为1
+        page = request.GET.get('page', 1)
+        # 把当前的页码数转换成整数类型
+        currentPage = int(page)
+
+        try:
+            print(page)
+            myquestions_list_obj = paginator.page(page)  # 获取当前页码的记录
+        except PageNotAnInteger:
+            myquestions_list_obj = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
+        except EmptyPage:
+            myquestions_list_obj = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
     return render(request, 'stack_under_flow/my.html', locals())
 
 
@@ -534,11 +604,11 @@ def mynews(request):
 
     try:
         print(page)
-        questiontable = paginator.page(page)  # 获取当前页码的记录
+        mymessages = paginator.page(page)  # 获取当前页码的记录
     except PageNotAnInteger:
-        questiontable = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
+        mymessages = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
     except EmptyPage:
-        questiontable = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
+        mymessages = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
     return render(request, 'stack_under_flow/mynews.html', locals())
 
 def readallmessage(request):
@@ -747,4 +817,26 @@ def commitrewritequestion(request):
         except:
             return ErrorResponse7('更新问题失败！')
 
+def addtag(request):
+    def ErrorResponse7(message):
+        data = {}
+        data['status'] = 'ERROR'
+        data['message'] = message
+        return JsonResponse(data)
 
+    def SuccessResponse7():
+        data = {}
+        data['status'] = 'SUCCESS'
+        return JsonResponse(data)
+
+    try:
+        tagname = request.POST.get('tagname')
+        if tag.objects.filter(tagname=tagname) != None:
+            return ErrorResponse7('已经有名称为“'+tagname+"”的标签了！请不要重复添加！")
+        print("要添加的标签名称为"+tagname)
+        newtag=tag()
+        newtag.tagname=tagname
+        newtag.save()
+        return SuccessResponse7()
+    except:
+        return ErrorResponse7('添加标签失败！')

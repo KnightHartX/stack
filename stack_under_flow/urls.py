@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^rewritequestion/', stack_views.rewritequestion, name='rewritequestion'),
     url('returnquestioninfo', stack_views.returnquestioninfo, name='returnquestioninfo'),
     url('commitrewritequestion', stack_views.commitrewritequestion, name='commitrewritequestion'),
+    url('addtag', stack_views.addtag, name='addtag'),
 ]
