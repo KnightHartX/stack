@@ -33,6 +33,7 @@ class question(models.Model):
     display = models.BooleanField(default=1)
     view = models.IntegerField(default=0)
     update_time = models.DateTimeField('发布时间', auto_now_add=True)
+    rewrite_time=models.DateTimeField('编辑时间', auto_now=True)
     giftpoint=models.IntegerField(default=0)
 
     class Meta:

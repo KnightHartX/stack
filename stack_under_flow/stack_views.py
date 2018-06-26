@@ -583,7 +583,7 @@ def returnquestioninfo(request):
         questionid = request.GET.get('questionid')
         print(questionid)
         old_question = question.objects.get(id=questionid)
-        return SuccessResponse6(old_question.title,old_question.content,old_question.giftpoint,old_question.beforemarkdown)
+        return SuccessResponse6(old_question.title,old_question.content,old_question.giftpoint,old_question.contentstring)
     except:
         return ErrorResponse6('获取该问题信息失败！')
 
@@ -701,8 +701,7 @@ def commitrewritequestion(request):
             print("问题的悬赏分为 "+giftpoint)
             int_giftpoint = int(giftpoint)
             if current_user.point < int_giftpoint:
-                messages.info(request, '悬赏分数大于用户积分，请重新输入！')
-                return HttpResponseRedirect('http://127.0.0.1:8000/stack_under_flow/rewritequestion.html')
+                return ErrorResponse7('超过用户所拥有的分数，请重新输入！')
             else:
                 pass
             # 先增加相关问题信息

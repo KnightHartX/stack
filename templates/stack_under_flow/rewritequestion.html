@@ -130,19 +130,7 @@
                                required></p>
         <textarea id="summernote" class="form-control" rows="8" placeholder="请输入您的问题详情"
                   name="content" required></textarea>
-        <span>请选择该问题的类型</span>
-
-        {#        {% for item in tags_list_obj %}#}
-        {#            <label><input name="{{ item.tagname }}" type="checkbox" value="{{ item.tagname }}"/>{{ item.tagname }}#}
-        {#            </label>#}
-        {#        {% endfor %}#}
-        {% for item in tags_list_obj %}
-            <label class="checkbox-inline">
-                <input value="{{ item.tagname }}" type="checkbox" name="tags" id="tags1"/>{{ item.tagname }}
-            </label>
-        {% endfor %}
         <br>
-        <input type="reset" class="btn btn-primary">
         <button class="btn btn-primary" onclick="sendquestion1()">提交问题</button>
     </form>
     <script>
@@ -152,7 +140,6 @@
             let title = $("#title1").val();
             let giftpoint=$("#giftpoint1").val();
             let content = $('#summernote').summernote('code');
-            {#let tags=$("#tags1").val();#}
             $.ajax({
                 url: "{% url 'stack_under_flow:commitrewritequestion' %}",
                 type: 'POST',
@@ -161,7 +148,6 @@
                     title:title,
                     giftpoint:giftpoint,
                     content:content,
-                    {#tags:tags#}
                 },
                 cache: false,
                 success: function (data) {
@@ -190,28 +176,48 @@
                                    required></p>
             <textarea id="markdowneditor" class="form-control" rows="8" placeholder="请输入您的问题详情"
                       name="content" required></textarea>
-            <span>请选择该问题的类型</span>
-
-            {#            {% for item in tags_list_obj %}#}
-            {#                <label><input name="{{ item.tagname }}" type="checkbox" value="{{ item.tagname }}"/>{{ item.tagname }}#}
-            {#                </label>#}
-            {#            {% endfor %}#}
-
-            {% for item in tags_list_obj %}
-                <label class="checkbox-inline">
-                    <input value="{{ item.tagname }}" type="checkbox" name="tags"/>{{ item.tagname }}
-                </label>
-            {% endfor %}
-            <br>
-            <input type="reset" class="btn btn-primary"><input class="btn btn-primary" type="submit" value="提交问题">
+        <br>
+        <button class="btn btn-primary" onclick="sendquestion2()">提交问题</button>
         </form>
     </div>
+    <script>
+        function sendquestion2() {
+            let questionid = localStorage.getItem('questionid');//key要用单引号或者双引号包括着
+            console.log("问题的id为"+questionid);
+            let title = $("#title2").val();
+            let giftpoint=$("#giftpoint2").val();
+            let content =  $("#markdowneditor").val();
+            $.ajax({
+                url: "{% url 'stack_under_flow:commitrewritequestion' %}",
+                type: 'POST',
+                data: {
+                    questionid:questionid,
+                    title:title,
+                    giftpoint:giftpoint,
+                    content:content,
+                },
+                cache: false,
+                success: function (data) {
+                    console.log(data)
+                    if (data['status'] == 'SUCCESS') {
+                        alert("修改问题成功！");
+                        window.location.href = "http://127.0.0.1:8000/stack_under_flow/questioninfo/"+questionid;
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr)
+                }
+            });
+        }
+    </script>
 </div>
 
 <script>
     function getdata() {
         let questionid = localStorage.getItem('questionid');//key要用单引号或者双引号包括着,用一变量存起来方便使用
-        alert(questionid);
+        // alert(questionid);
         $.ajax({
             url: "{% url 'stack_under_flow:returnquestioninfo' %}",
             type: 'GET',

@@ -121,7 +121,8 @@
                 <h1 class="article-title"><a href="#"> {{ questioninfo.title }} </a></h1>
                 <div class="article-meta ">
                     <span class="giftpoint"><a>悬赏积分：{{ questioninfo.giftpoint }}分&nbsp;&nbsp;&nbsp;</a></span>
-                    <span class="item time ">{{ questioninfo.update_time }}</span>
+                    <span class="item time ">创建于{{ questioninfo.update_time }}</span>
+                    <span class="item time ">修改于{{ questioninfo.rewrite_time }}</span>
                     <span class="item tags">标签：
                         {% for item in tagdisplay %}
                             <a href="{% url 'stack_under_flow:tag' item.pk %}">{{ item.tagname }}</a>

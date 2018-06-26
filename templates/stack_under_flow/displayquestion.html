@@ -98,7 +98,8 @@
                         {% endautoescape %}
                     </div>
                     <p class="meta">
-                        <a class="time"><i class="glyphicon glyphicon-time"></i> {{ item.update_time }}</a>
+                        <a class="time"><i class="glyphicon glyphicon-time"></i> 创建于{{ item.update_time }}</a>
+                         <a class="time"><i class="glyphicon glyphicon-time"></i>编辑于 {{ item.rewrite_time }}</a>
                         <a class="views"><i class="glyphicon glyphicon-eye-open"></i> 阅读量（{{ item.view }}）</a>
                         <a class="comment" href="{% url 'stack_under_flow:questioninfo'  item.id %}"><i
                                 class="glyphicon glyphicon-comment"></i> 回答数目( {{ item.answercount }})
