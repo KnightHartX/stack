@@ -5,7 +5,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>注册</title>
-    <link rel="stylesheet" href="https://unpkg.com/mobi.css/dist/mobi.min.css">
+     {% load staticfiles %}
+    <link rel="stylesheet" href="{%static 'css/mobi.min.css'%} "/>
     <style>
         .errorlist {
             color: red;
@@ -13,7 +14,8 @@
     </style>
 </head>
 <body>
-<div class="flex-center">
+<div class=" flex-center
+    ">
     <div class="container">
         <div class="flex-center">
             <div class="unit-1-2 unit-1-on-mobile">
@@ -38,6 +40,6 @@
             </div>
         </div>
     </div>
-</div>
-</body>
+    </div>
+    </body>
 </html>
