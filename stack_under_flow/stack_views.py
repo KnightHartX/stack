@@ -831,12 +831,13 @@ def addtag(request):
 
     try:
         tagname = request.POST.get('tagname')
-        if tag.objects.filter(tagname=tagname) != None:
+        if tag.objects.filter(tagname=tagname).count() != 0:
             return ErrorResponse7('已经有名称为“'+tagname+"”的标签了！请不要重复添加！")
-        print("要添加的标签名称为"+tagname)
-        newtag=tag()
-        newtag.tagname=tagname
-        newtag.save()
-        return SuccessResponse7()
+        else:
+            print("要添加的标签名称为"+tagname)
+            newtag=tag()
+            newtag.tagname=tagname
+            newtag.save()
+            return SuccessResponse7()
     except:
         return ErrorResponse7('添加标签失败！')
