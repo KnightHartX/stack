@@ -14,7 +14,7 @@ from markdown import markdown
 from django.db.models import Q
 from .htmltostring import strip_tags
 
-
+# 提交问题
 def commitquestion(request):
     current_user = request.user
     if current_user.is_anonymous:
@@ -103,6 +103,7 @@ def commitquestion(request):
 
     return render(request, 'stack_under_flow/commitquestion.html', locals())
 
+# 显示问题
 def displayquestion(request):
     current_user = request.user
     if current_user.is_anonymous:
@@ -255,6 +256,7 @@ def questioninfo(request, para):
     return render(request, 'stack_under_flow/questioninfo.html', locals())
 
 
+# 显示标签
 def itemsintag(request, para):
     # print(para)
     # 显示用户名
@@ -303,6 +305,7 @@ def itemsintag(request, para):
     return render(request, 'stack_under_flow/tag.html', locals())
 
 
+# 搜索页面
 def search(request):
     # --旧的disquestion代码:--
     current_user = request.user
@@ -355,6 +358,7 @@ def search(request):
     return render(request, 'stack_under_flow/displayquestion.html', locals())
 
 
+# 用户个人页面
 def my(request):
     # --旧的disquestion代码:--
     current_user = request.user
@@ -404,7 +408,7 @@ def my(request):
             myquestions_list_obj = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
     return render(request, 'stack_under_flow/my.html', locals())
 
-
+# 方法：赠送悬赏积分
 def sendgiftpoint(request):
     def ErrorResponse3(message):
         data = {}
@@ -450,6 +454,7 @@ def sendgiftpoint(request):
 
     return SuccessResponse3()
 
+# 管理界面
 def myadmin(request):
     # --旧的disquestion代码:--
     current_user = request.user
@@ -501,6 +506,7 @@ def myadmin(request):
         questiontable = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
     return render(request, 'stack_under_flow/myadmin.html', locals())
 
+# 管理界面搜索
 def searchtable(request):
     # --旧的disquestion代码:--
     current_user = request.user
@@ -561,6 +567,7 @@ def searchtable(request):
         questiontable = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
     return render(request, 'stack_under_flow/myadmin.html', locals())
 
+# 方法：删除文章
 def deletetable(request):
     current_user = request.user
     def ErrorResponse4(message):
@@ -590,6 +597,7 @@ def deletetable(request):
     except:
         return ErrorResponse4('删除问题失败!')
 
+# 用户消息页面
 def mynews(request):
     # --旧的disquestion代码:--
     current_user = request.user
@@ -687,6 +695,7 @@ def returnquestioninfo(request):
     except:
         return ErrorResponse6('获取该问题信息失败！')
 
+#方法：修改问题
 def rewritequestion(request):
     current_user = request.user
     if current_user.is_anonymous:
