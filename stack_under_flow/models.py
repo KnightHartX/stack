@@ -55,7 +55,7 @@ class answer(models.Model):
         verbose_name_plural = '回答'
 
 class tag(models.Model):
-    tagname=models.CharField(max_length=500)
+    tagname=models.CharField(max_length=500,null=False)
     qcountintag=models.IntegerField(default=0)
     questions=models.ManyToManyField(question,related_name='tag_questions')
 
